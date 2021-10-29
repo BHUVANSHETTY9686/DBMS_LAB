@@ -1,0 +1,2 @@
+# DBMS_LAB
+MYSQL query
