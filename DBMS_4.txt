@@ -1,0 +1,212 @@
+ CREATE DATABASE COLLEGE;
+
+
+ USE COLLEGE;
+
+ CREATE TABLE STUDENT (
+    -> USN VARCHAR (10) PRIMARY KEY,
+    -> SNAME VARCHAR (25),
+    -> ADDRESS VARCHAR (25),
+    -> PHONE BIGINT (10),
+    -> GENDER CHAR (1));
+
+
+ CREATE TABLE SEMSEC (
+    -> SSID VARCHAR (5) PRIMARY KEY,
+    -> SEM INT (5),
+    -> SEC CHAR (1));
+
+
+
+ CREATE TABLE CLASS (USN VARCHAR (10) PRIMARY KEY,SSID VARCHAR (5), FOREIGN KEY (USN) REFERENCES STUDENT (USN), FOREIGN KEY (SSID) REFERENCES SEMSEC (SSID));
+
+
+
+ CREATE TABLE COURSE(SUBCODE VARCHAR(10) PRIMARY KEY,TITLE VARCHAR(20),SEM INT,CREDITS INT);
+
+
+CREATE TABLE IAMARKS (USN VARCHAR (10),SUBCODE VARCHAR (8),SSID VARCHAR (5),TEST1 INT (2),TEST2 INT (2),TEST3 INT (2),FINALIA INT (2),PRIMARY KEY (USN, SUBCODE, SSID),FOREIGN KEY (USN) REFERENCES STUDENT (USN),FOREIGN KEY (SUBCODE) REFERENCES COURSE (SUBCODE), FOREIGN KEY (SSID) REFERENCES SEMSEC (SSID));
+
+
+
+
+
+
+ INSERT INTO STUDENT VALUES ('1BI15CS101','AKSHAY','BELAGAVI', 8877881122,'M');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO STUDENT VALUES ('4MT19CS001','AARON','KARAKALA', 8877881122,'M');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO STUDENT VALUES ('4MT19CS002','AARON M','KARAKALA', 8877881122,'M');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO STUDENT VALUES ('4MT19CS017','AKSHATHA','KARAKALA', 8877881122,'F');
+
+ INSERT INTO STUDENT VALUES ('4MT19CS019','AMRUTHA','KARAKALA', 8877881122,'F') ;
+
+
+
+
+ INSERT INTO SEMSEC VALUES ('1', 8,'C');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SEMSEC VALUES ('2', 8,'A');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SEMSEC VALUES ('3', 8,'B');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SEMSEC VALUES ('4', 4,'C');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO SEMSEC VALUES ('5', 4,'A');
+
+
+
+INSERT INTO CLASS VALUES ('1BI15CS101','1');
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO CLASS VALUES ('4MT19CS001','2');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO CLASS VALUES ('4MT19CS002','3');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO CLASS VALUES ('4MT19CS017','4');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO CLASS VALUES ('4MT19CS019','5');
+
+
+
+
+INSERT INTO COURSE VALUES ('18CS81','ACA', 8, 4);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS82','SSM', 8, 4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS83','NM', 8, 4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS84','CC', 8, 4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS85','PW', 8, 4);
+
+
+ INSERT INTO COURSE VALUES ('18CS41','MAT', 4, 3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS42','DAA', 4, 4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS43','OS', 4, 3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS44','MES', 4, 3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS45','OOC', 4, 3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO COURSE VALUES ('18CS46','DC', 4, 3);
+Query OK, 1 row affected (0.01 sec)
+
+
+
+
+
+INSERT INTO IAMARKS VALUES('1BI15CS101','18CS81','1',15,16,18,NULL);
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO IAMARKS VALUES('1BI15CS101','18CS82','1',12,19,14,NULL);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO IAMARKS VALUES('1BI15CS101','18CS83','1',19,15,20,NULL);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO IAMARKS VALUES('1BI15CS101','18CS84','1',20,16,19,NULL);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO IAMARKS VALUES('1BI15CS101','18CS85','1',15,15,12,NULL);
+
+
+
+
+
+
+
+
+
+---------------------------------------1-----------------------------------------
+ SELECT S.*, SS.SEM, SS.SEC FROM STUDENT S, SEMSEC SS, CLASS C WHERE S.USN = C.USN AND SS.SSID = C.SSID AND SS.SEM = 4 AND SS.SEC='C';
++------------+----------+----------+------------+--------+------+------+
+| USN        | SNAME    | ADDRESS  | PHONE      | GENDER | SEM  | SEC  |
++------------+----------+----------+------------+--------+------+------+
+| 4MT19CS017 | AKSHATHA | KARAKALA | 8877881122 | F      |    4 | C    |
++------------+----------+----------+------------+--------+------+------+
+
+
+
+
+ SELECT SS.SEM,SS.SEC,COUNT(CASE WHEN GENDER='M' THEN S.USN END) AS TOTAL_MALE,COUNT(CASE WHEN GENDER='F' THEN S.USN END) AS TOTAL_FEMALE FROM STUDENT AS S,SEMSEC AS SS,CLASS AS C WHERE S.USN=C.USN AND SS.SSID=C.SSID GROUP BY SS.SEM,SS.SEC;
++------+------+------------+--------------+
+| SEM  | SEC  | TOTAL_MALE | TOTAL_FEMALE |
++------+------+------------+--------------+
+|    8 | C    |          1 |            0 |
+|    8 | A    |          1 |            0 |
+|    8 | B    |          1 |            0 |
+|    4 | C    |          0 |            1 |
+|    4 | A    |          0 |            1 |
++------+------+------------+--------------+
+
+
+
+
+ CREATE VIEW TEST1_MARKS AS SELECT C.SUBCODE,C.TITLE,I.TEST1 FROM IAMARKS AS I,COURSE AS C WHERE C.SUBCODE=I.SUBCODE AND I.USN="1BI15CS101";
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> SELECT * FROM TEST1_MARKS;
++---------+-------+-------+
+| SUBCODE | TITLE | TEST1 |
++---------+-------+-------+
+| 18CS81  | ACA   |    15 |
+| 18CS82  | SSM   |    12 |
+| 18CS83  | NM    |    19 |
+| 18CS84  | CC    |    20 |
+| 18CS85  | PW    |    15 |
++---------+-------+-------+
+
+
+
+
+UPDATE IAMARKS SET FINALIA=((TEST1+TEST2+TEST3)-LEAST(TEST1,TEST2,TEST3))/2;
+Query OK, 5 rows affected (0.01 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> SELECT * FROM IAMARKS;
++------------+---------+------+-------+-------+-------+---------+
+| USN        | SUBCODE | SSID | TEST1 | TEST2 | TEST3 | FINALIA |
++------------+---------+------+-------+-------+-------+---------+
+| 1BI15CS101 | 18CS81  | 1    |    15 |    16 |    18 |      17 |
+| 1BI15CS101 | 18CS82  | 1    |    12 |    19 |    14 |      17 |
+| 1BI15CS101 | 18CS83  | 1    |    19 |    15 |    20 |      20 |
+| 1BI15CS101 | 18CS84  | 1    |    20 |    16 |    19 |      20 |
+| 1BI15CS101 | 18CS85  | 1    |    15 |    15 |    12 |      15 |
++------------+---------+------+-------+-------+-------+---------+
+
+
+
+
+ SELECT S.USN,S.SNAME,IA.FINALIA,(CASE WHEN FINALIA>=17 AND FINALIA<=20 THEN "OUTSTANDING" WHEN FINALIA>=12 AND FINALIA<=16 THEN "AVERAGE" WHEN FINALIA<12 THEN "WEAK" END ) AS CAT FROM STUDENT S,IAMARKS IA,SEMSEC SS,COURSE C WHERE S.USN=IA.USN AND SS.SSID=IA.SSID AND C.SUBCODE=IA.SUBCODE AND C.SEM=8;
++------------+--------+---------+-------------+
+| USN        | SNAME  | FINALIA | CAT         |
++------------+--------+---------+-------------+
+| 1BI15CS101 | AKSHAY |      17 | OUTSTANDING |
+| 1BI15CS101 | AKSHAY |      17 | OUTSTANDING |
+| 1BI15CS101 | AKSHAY |      20 | OUTSTANDING |
+| 1BI15CS101 | AKSHAY |      20 | OUTSTANDING |
+| 1BI15CS101 | AKSHAY |      15 | AVERAGE     |
++------------+--------+---------+-------------+

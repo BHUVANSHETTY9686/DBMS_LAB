@@ -1,0 +1,534 @@
+mysql> create database company;
+Query OK, 1 row affected (0.10 sec)
+
+mysql> use company;
+Database changed
+mysql> CREATE TABLE DEPARTMENT(DNO INT PRIMARY KEY,DNAME VARCHAR(20), MGRSTARTDATE DATE);
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> CREATE TABLE EMPLOYEE( SSN VARCHAR(20) PRIMARY KEY,NAME VARCHAR(20),ADDRESS VARCHAR(20),SEX CHAR(10),SALARY BIGINT,SUPERSSN VARCHAR(20),DNO INT,FOREIGN KEY(SUPERSSN) REFERENCES EMPLOYEE(SSN) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(DNO) REFERENCES DEPARTMENT(DNO) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> ^C
+mysql> ALTER TABLE DEPARTMENT ADD MGRSSN VARCHAR(20);
+Query OK, 0 rows affected (0.07 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> ALTER TABLE DEPARTMENT ADD FOREIGN KEY(MGRSSN) REFERENCES EMPLOYEE(SSN);
+Query OK, 0 rows affected (0.17 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> CREATE TABLE DLOCATION(DNO INT,DLOC VARCHAR(20),PRIMARY KEY(DNO,DLOC),FOREIGN KEY(DNO) REFERENCES DEPARTMENT(DNO) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE PROJECT (PNO INT PRIMARY KEY, PNAME VARCHAR(20),PLOCATION VARCHAR(20),DNO INT,FOREIGN KEY(DNO) REFERENCES DEPARTMENT(DNO) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> CREATE TABLE WORKS_ON(SSN VARCHAR(20),PNO INT,HOURS INT(2),PRIMARY KEY(SSN,PNO),FOREIGN KEY(SSN) REFERENCES EMPLOYEE(SSN) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(PNO) REFERENCES PROJECT(PNO) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected, 1 warning (0.10 sec)
+
+mysql> INSERT INTO EMPLOYEE (SSN,NAME,ADDRESS,SEX,SALARY) VALUES('RNACC01','KANTHI','MANGALORE','F',350000),('RNACC02','KUMAR','MANGALORE','M',300000);
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++---------+--------+-----------+------+--------+----------+------+
+| SSN     | NAME   | ADDRESS   | SEX  | SALARY | SUPERSSN | DNO  |
++---------+--------+-----------+------+--------+----------+------+
+| RNACC01 | KANTHI | MANGALORE | F    | 350000 | NULL     | NULL |
+| RNACC02 | KUMAR  | MANGALORE | M    | 300000 | NULL     | NULL |
++---------+--------+-----------+------+--------+----------+------+
+2 rows in set (0.00 sec)
+
+mysql> ('RNACC02','KUMAR','MANGALORE','M',300000);^Z
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''RNACC02','KUMAR','MANGALORE','M',300000)' at line 1
+    -> ;
+ERROR:
+No query specified
+
+mysql> INSERT INTO EMPLOYEE (SSN,NAME,ADDRESS,SEX,SALARY) VALUES('RNCSE01','SMITH','BANGALORE','M',500000),('RNCSE02','BAKER','BANGALORE','M',700000),('RNCSE03','SIMEN','MYSORE','M',500000),('RNCSE04','HEGDE','MANGALORE','M',650000),('RNCSE05','MALYA','MYSORE','M',450000),('RNCSE06','SHRINIDHI','BANGALORE','F',800000),('RNECE01','SCOTT','BANGALORE','M',450000),('RNISE01','MAHESH','MYSORE','M',600000),('RNIT01','HARISH','BANGALORE','M',500000);
+Query OK, 9 rows affected (0.01 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> select * from employee;
++---------+-----------+-----------+------+--------+----------+------+
+| SSN     | NAME      | ADDRESS   | SEX  | SALARY | SUPERSSN | DNO  |
++---------+-----------+-----------+------+--------+----------+------+
+| RNACC01 | KANTHI    | MANGALORE | F    | 350000 | NULL     | NULL |
+| RNACC02 | KUMAR     | MANGALORE | M    | 300000 | NULL     | NULL |
+| RNCSE01 | SMITH     | BANGALORE | M    | 500000 | NULL     | NULL |
+| RNCSE02 | BAKER     | BANGALORE | M    | 700000 | NULL     | NULL |
+| RNCSE03 | SIMEN     | MYSORE    | M    | 500000 | NULL     | NULL |
+| RNCSE04 | HEGDE     | MANGALORE | M    | 650000 | NULL     | NULL |
+| RNCSE05 | MALYA     | MYSORE    | M    | 450000 | NULL     | NULL |
+| RNCSE06 | SHRINIDHI | BANGALORE | F    | 800000 | NULL     | NULL |
+| RNECE01 | SCOTT     | BANGALORE | M    | 450000 | NULL     | NULL |
+| RNISE01 | MAHESH    | MYSORE    | M    | 600000 | NULL     | NULL |
+| RNIT01  | HARISH    | BANGALORE | M    | 500000 | NULL     | NULL |
++---------+-----------+-----------+------+--------+----------+------+
+11 rows in set (0.00 sec)
+
+mysql> INSERT INTO DEPARTMENT VALUES(1,'ACCOUNTS','2001-01-01','RNACC02'),(2,'IT','2016-08-01','RNIT01'),(3,'ECE','2008-06-01','RNECE01'),(4,'ISE','2015-08-01','RNISE01'),(5,'CSE','2002-06-01','RNISE01');
+Query OK, 5 rows affected (0.04 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from department;
++-----+----------+--------------+---------+
+| DNO | DNAME    | MGRSTARTDATE | MGRSSN  |
++-----+----------+--------------+---------+
+|   1 | ACCOUNTS | 2001-01-01   | RNACC02 |
+|   2 | IT       | 2016-08-01   | RNIT01  |
+|   3 | ECE      | 2008-06-01   | RNECE01 |
+|   4 | ISE      | 2015-08-01   | RNISE01 |
+|   5 | CSE      | 2002-06-01   | RNISE01 |
++-----+----------+--------------+---------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO DLOCATION VALUES(1,'BANGALORE'),(2,'BANGALORE'),(3,'BANGALORE'),(4,'MANGALORE'),(5,'MANGALORE');
+Query OK, 5 rows affected (0.10 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from dlocation;
++-----+-----------+
+| DNO | DLOC      |
++-----+-----------+
+|   1 | BANGALORE |
+|   2 | BANGALORE |
+|   3 | BANGALORE |
+|   4 | MANGALORE |
+|   5 | MANGALORE |
++-----+-----------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO PROJECT VALUES(100,'IOT','BANGALORE',5);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PROJECT VALUES(101,'CLOUD','BANGALORE',5);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PROJECT VALUES(102,'BIGDATA','BANGALORE',5);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PROJECT VALUES(103,'SENSORS','BANGALORE',3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PROJECT VALUES(104,'BANK MANAGEMENT','BANGALORE',1);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PROJECT VALUES(105,'SALARY MANAGEMENT','BANGALORE',1);
+Query OK, 1 row affected (0.16 sec)
+
+mysql> INSERT INTO PROJECT VALUES(106,'OPEN STACK','BANGALORE',4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PROJECT VALUES(107,'SMARTCITY','BANGALORE',2);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from project;
++-----+-------------------+-----------+------+
+| PNO | PNAME             | PLOCATION | DNO  |
++-----+-------------------+-----------+------+
+| 100 | IOT               | BANGALORE |    5 |
+| 101 | CLOUD             | BANGALORE |    5 |
+| 102 | BIGDATA           | BANGALORE |    5 |
+| 103 | SENSORS           | BANGALORE |    3 |
+| 104 | BANK MANAGEMENT   | BANGALORE |    1 |
+| 105 | SALARY MANAGEMENT | BANGALORE |    1 |
+| 106 | OPEN STACK        | BANGALORE |    4 |
+| 107 | SMARTCITY         | BANGALORE |    2 |
++-----+-------------------+-----------+------+
+8 rows in set (0.00 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE01',100,4);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE01',101,6);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE01',102,8);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE02',100,10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE04',100,3);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE05',101,4);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE06',102,5);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE06',102,5);
+ERROR 1062 (23000): Duplicate entry 'RNCSE06-102' for key 'works_on.PRIMARY'
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE03',102,6);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNCSE01',103,7);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNECE01',104,5);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNACC02',105,6);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNISE01',106,4);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO WORKS_ON VALUES('RNIT01',107,10);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from works_on;
++---------+-----+-------+
+| SSN     | PNO | HOURS |
++---------+-----+-------+
+| RNACC02 | 105 |     6 |
+| RNCSE01 | 100 |     4 |
+| RNCSE01 | 101 |     6 |
+| RNCSE01 | 102 |     8 |
+| RNCSE01 | 103 |     7 |
+| RNCSE02 | 100 |    10 |
+| RNCSE03 | 102 |     6 |
+| RNCSE04 | 100 |     3 |
+| RNCSE05 | 101 |     4 |
+| RNCSE06 | 102 |     5 |
+| RNECE01 | 104 |     5 |
+| RNISE01 | 106 |     4 |
+| RNIT01  | 107 |    10 |
++---------+-----+-------+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+UPDATE EMPLOYEE SET SUPERSSN='RNACC02',DNO=1 WHERE SSN='RNACC01';
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=5,SALARY=700000 WHERE SSN='RNACC02';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=3 WHERE SSN='RNCSE01';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN='RNCSE03',DNO=5 WHERE SSN='RNCSE02';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN='RNCSE04',DNO=5 WHERE SSN='RNCSE03';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN='RNCSE05',DNO=5 WHERE SSN='RNCSE04';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN='RNCSE06',DNO=5 WHERE SSN='RNCSE05';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=5 WHERE SSN='RNCSE06';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=3 WHERE SSN='RNECE01';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=4 WHERE SSN='RNISE01';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=4 WHERE SSN='RNISE01';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+ UPDATE EMPLOYEE SET SUPERSSN=NULL,DNO=2 WHERE SSN='RNIT01';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------1-----------------------------------
+(SELECT DISTINCT P.PNO FROM PROJECT P, DEPARTMENT D, EMPLOYEE E WHERE E.DNO=D.DNO AND D.MGRSSN=E.SSN AND E.NAME='SCOTT') UNION (SELECT DISTINCT P1.PNO FROM PROJECT P1, WORKS_ON W, EMPLOYEE E1 WHERE P1.PNO=W.PNO AND E1.SSN=W.SSN AND E1.NAME='SCOTT');
++-----+
+| PNO |
++-----+
+| 104 |
+| 105 |
+| 107 |
+| 103 |
+| 106 |
+| 100 |
+| 101 |
+| 102 |
++-----+
+
+
+
+
+--------------------------------------2---------------------------------------
+ SELECT E.NAME, 1.1*E.SALARY AS INCR_SAL FROM EMPLOYEE E, WORKS_ON W, PROJECT P WHERE E.SSN=W.SSN AND W.PNO=P.PNO AND P.PNAME='IOT';
++-------+----------+
+| NAME  | INCR_SAL |
++-------+----------+
+| SMITH | 550000.0 |
+| BAKER | 770000.0 |
+| HEGDE | 715000.0 |
++-------+----------+
+
+
+
+
+
+
+------------------------------------------3--------------------------------------
+SELECT SUM(E.SALARY), MAX(E.SALARY), MIN(E.SALARY), AVG(E.SALARY) FROM EMPLOYEE E, DEPARTMENT D WHERE E.DNO=D.DNO AND D.DNAME='ACCOUNTS';
++---------------+---------------+---------------+---------------+
+| SUM(E.SALARY) | MAX(E.SALARY) | MIN(E.SALARY) | AVG(E.SALARY) |
++---------------+---------------+---------------+---------------+
+|        650000 |        350000 |        300000 |   325000.0000 |
++---------------+---------------+---------------+---------------+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------4-------------------------------------------
+ SELECT E.NAME FROM EMPLOYEE E WHERE NOT EXISTS (SELECT PNO FROM PROJECT P WHERE DNO=5 AND PNO NOT IN (SELECT PNO FROM WORKS_ON W WHERE E.SSN=SSN));
++-------+
+| NAME  |
++-------+
+| SMITH |
++-------+
+1 row in set (0.00 sec)
+
+
+
+
+
+
+
+---------------------------------------------5----------------------------------------------
+
+
+
+mysql> SELECT D.DNO, COUNT(*) FROM DEPARTMENT D, EMPLOYEE E WHERE D.DNO=E.DNO AND E.SALARY>600000 AND D.DNO IN (SELECT E1.DNO FROM EMPLOYEE E1 GROUP BY E1.DNO HAVING COUNT(*)>5) GROUP BY D.DNO;
++-----+----------+
+| DNO | COUNT(*) |
++-----+----------+
+|   5 |        4 |
++-----+----------+
+1 row in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+
+
+
+ DESC EMPLOYEE;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| SSN      | varchar(20) | NO   | PRI | NULL    |       |
+| NAME     | varchar(20) | YES  |     | NULL    |       |
+| ADDRESS  | varchar(20) | YES  |     | NULL    |       |
+| SEX      | char(10)    | YES  |     | NULL    |       |
+| SALARY   | bigint      | YES  |     | NULL    |       |
+| SUPERSSN | varchar(20) | YES  | MUL | NULL    |       |
+| DNO      | int         | YES  | MUL | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+7 rows in set (0.08 sec)
+
+
+
+> +----------+-------------+------+-----+---------+-------+^C
+mysql> DESC DEPARTMENT;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| DNO          | int         | NO   | PRI | NULL    |       |
+| DNAME        | varchar(20) | YES  |     | NULL    |       |
+| MGRSTARTDATE | date        | YES  |     | NULL    |       |
+| MGRSSN       | varchar(20) | YES  | MUL | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+
+
+
+
+
+
+
+
+mysql> DESC DLOCATION;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| DNO   | int         | NO   | PRI | NULL    |       |
+| DLOC  | varchar(20) | NO   | PRI | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+
+
+> DESC PROJECT;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| PNO       | int         | NO   | PRI | NULL    |       |
+| PNAME     | varchar(20) | YES  |     | NULL    |       |
+| PLOCATION | varchar(20) | YES  |     | NULL    |       |
+| DNO       | int         | YES  | MUL | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+
+mysql> DESC WORKS_ON;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| SSN   | varchar(20) | NO   | PRI | NULL    |       |
+| PNO   | int         | NO   | PRI | NULL    |       |
+| HOURS | int         | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+> SELECT * FROM EMPLOYEE;
++---------+-----------+-----------+------+--------+----------+------+
+| SSN     | NAME      | ADDRESS   | SEX  | SALARY | SUPERSSN | DNO  |
++---------+-----------+-----------+------+--------+----------+------+
+| RNACC01 | KANTHI    | MANGALORE | F    | 350000 | RNACC02  |    1 |
+| RNACC02 | KUMAR     | MANGALORE | M    | 700000 | NULL     |    5 |
+| RNCSE01 | SMITH     | BANGALORE | M    | 500000 | NULL     |    3 |
+| RNCSE02 | BAKER     | BANGALORE | M    | 700000 | RNCSE03  |    5 |
+| RNCSE03 | SIMEN     | MYSORE    | M    | 500000 | RNCSE04  |    5 |
+| RNCSE04 | HEGDE     | MANGALORE | M    | 650000 | RNCSE05  |    5 |
+| RNCSE05 | MALYA     | MYSORE    | M    | 450000 | RNCSE06  |    5 |
+| RNCSE06 | SHRINIDHI | BANGALORE | F    | 800000 | NULL     |    5 |
+| RNECE01 | SCOTT     | BANGALORE | M    | 450000 | NULL     |    3 |
+| RNISE01 | MAHESH    | MYSORE    | M    | 600000 | NULL     |    4 |
+| RNIT01  | HARISH    | BANGALORE | M    | 500000 | NULL     |    2 |
++---------+-----------+-----------+------+--------+----------+------+
+11 rows in set (0.00 sec)
+
+
+
+
+SELECT * FROM DEPARTMENT;
++-----+----------+--------------+---------+
+| DNO | DNAME    | MGRSTARTDATE | MGRSSN  |
++-----+----------+--------------+---------+
+|   1 | ACCOUNTS | 2001-01-01   | RNACC02 |
+|   2 | IT       | 2016-08-01   | RNIT01  |
+|   3 | ECE      | 2008-06-01   | RNECE01 |
+|   4 | ISE      | 2015-08-01   | RNISE01 |
+|   5 | CSE      | 2002-06-01   | RNISE01 |
++-----+----------+--------------+---------+
+5 rows in set (0.00 sec)
+
+
+
+mysql> SELECT * FROM DLOCATION;
++-----+-----------+
+| DNO | DLOC      |
++-----+-----------+
+|   1 | BANGALORE |
+|   2 | BANGALORE |
+|   3 | BANGALORE |
+|   4 | MANGALORE |
+|   5 | MANGALORE |
++-----+-----------+
+5 rows in set (0.00 sec)
+
+
+
+mysql> SELECT * FROM PROJECT;
++-----+-------------------+-----------+------+
+| PNO | PNAME             | PLOCATION | DNO  |
++-----+-------------------+-----------+------+
+| 100 | IOT               | BANGALORE |    5 |
+| 101 | CLOUD             | BANGALORE |    5 |
+| 102 | BIGDATA           | BANGALORE |    5 |
+| 103 | SENSORS           | BANGALORE |    3 |
+| 104 | BANK MANAGEMENT   | BANGALORE |    1 |
+| 105 | SALARY MANAGEMENT | BANGALORE |    1 |
+| 106 | OPEN STACK        | BANGALORE |    4 |
+| 107 | SMARTCITY         | BANGALORE |    2 |
++-----+-------------------+-----------+------+
+8 rows in set (0.00 sec)
+
+
+
+
+mysql> SELECT * FROM WORKS_ON;
++---------+-----+-------+
+| SSN     | PNO | HOURS |
++---------+-----+-------+
+| RNACC02 | 105 |     6 |
+| RNCSE01 | 100 |     4 |
+| RNCSE01 | 101 |     6 |
+| RNCSE01 | 102 |     8 |
+| RNCSE01 | 103 |     7 |
+| RNCSE02 | 100 |    10 |
+| RNCSE03 | 102 |     6 |
+| RNCSE04 | 100 |     3 |
+| RNCSE05 | 101 |     4 |
+| RNCSE06 | 102 |     5 |
+| RNECE01 | 104 |     5 |
+| RNISE01 | 106 |     4 |
+| RNIT01  | 107 |    10 |
++---------+-----+-------+
+13 rows in set (0.00 sec)
+
+
+
+
+
