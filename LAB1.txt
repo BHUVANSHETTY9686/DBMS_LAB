@@ -1,0 +1,362 @@
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 8
+Server version: 8.0.26 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| 5cs1_b2_college    |
+| 5cs1_b2_movie      |
+| 5cs1_b2_order      |
+| college            |
+| company            |
+| information_schema |
+| movie              |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| world              |
++--------------------+
+12 rows in set (0.08 sec)
+
+mysql> CREATE DATABASE LIBRARY;
+Query OK, 1 row affected (0.03 sec)
+
+mysql> USE LIBRARY;
+Database changed
+mysql> CREATE TABLE PUBLISHER(NAME VARCHAR(20) PRIMARY KEY,ADDRESS VARCHAR(30),PHONE BIGINT);
+Query OK, 0 rows affected (0.17 sec)
+
+mysql> CREATE TABLE LIBARY_PROGRAMME(PROGRAMME_ID INT PRIMARY KEY,PROGRAMME_NAME VARCHAR(20),ADDRESS VARCHAR(30))
+    -> ;
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> CREATE TABLE BOOK(BOOK_ID INT PRIMARY KEY,TITLE VARCHAR(20),PUBLISHER_NAME VARCHAR(20),PUB_YEAR INT,FOREIGN KEY(PUBLISHER_NAME) REFERENCES PUBLISHER(NAME) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.16 sec)
+
+mysql> CREATE TABLE BOOK_AUTHOR(BOOK_ID INT PRIMARY KEY,AUTHOR_NAME VARCHAR(20),FOREIGN KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.17 sec)
+
+mysql> CREATE TABLE BOOK_COPIES(BOOK_ID INT,PROGRAMME_ID INT,NO_OF_COPIES INT,PRIMARY KEY(BOOK_ID,PROGRAMME_ID),FOREIGN KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(PROGRAMME_ID) REFERENCES LIBRARY_PROGRAMME(PROGRAMME_ID) ON DELETE CASCADE ON UPDATE CASCADE);
+ERROR 1824 (HY000): Failed to open the referenced table 'library_programme'
+mysql> CREATE TABLE BOOK_COPIES(BOOK_ID INT,PROGRAMME_ID INT,NO_OF_COPIES INT,PRIMARY KEY(BOOK_ID,PROGRAMME_ID),FOREIGN KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(PROGRAMME_ID) REFERENCES LIBARY_PROGRAMME(PROGRAMME_ID) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> CREATE TABLE BOOK_LENDING(BOOK_ID INT,PROGRAMME_ID INT,CARD_NO INT,DATE_OUT DATE,DUE_DATE DATE,PRIMARY KEY(BOOK_ID,PROGRAMME_ID,CARD_NO),FOREING KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(PROGRAMME_ID) REFERENCES LIBARY_PROGRAMME(PROGRAMME_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE,FOREIG' at line 1
+mysql> CREATE TABLE BOOK_LENDING(BOOK_ID INT,PROGRAMME_ID INT,CARD_NO INT,DATE_OUT DATE,DUE_DATE DATE,PRIMARY KEY(BOOK_ID,PROGRAMME_ID,CARD_NO),FOREIGN KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(PROGRAMME_ID) REFERENCES LIBARY_PROGRAMME(PROGRAMME_ID) ON DELETE CASCADE ON UPDATE CASCADE;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> CREATE TABLE BOOK_LENDING(BOOK_ID INT,PROGRAMME_ID INT,CARD_NO INT,DATE_OUT DATE,DUE_DATE DATE,PRIMARY KEY(BOOK_ID,PROGRAMME_ID,CARD_NO),FOREIGN KEY(BOOK_ID) REFERENCES BOOK(BOOK_ID) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY(PROGRAMME_ID) REFERENCES LIBARY_PROGRAMME(PROGRAMME_ID) ON DELETE CASCADE ON UPDATE CASCADE);
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> INSERT INTO TABLE PUBLISHER('SBC','UDUPI',9999999999);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TABLE PUBLISHER('SBC','UDUPI',9999999999)' at line 1
+mysql> INSERT INTO TABLE PUBLISHER VALUES('SBC','UDUPI',9999999999);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'TABLE PUBLISHER VALUES('SBC','UDUPI',9999999999)' at line 1
+mysql> INSERT INTO PUBLISHER VALUES('SBC','UDUPI',9999999999);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('PEARSON','MANGALORE',8888888888);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('KETO','DUBAI',77777777777);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('MILATO','US',6666666666);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('KEDO','ENGLAND',5555555555);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO LIBARY_PROGRAMME(10,'P1','UDUPI');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '10,'P1','UDUPI')' at line 1
+mysql> INSERT INTO LIBARY_PROGRAMME VALUES(10,'P1','UDUPI');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO LIBARY_PROGRAMME VALUES(11,'P2','MANGALORE');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO LIBARY_PROGRAMME VALUES(12,'P3','DUBAI');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO LIBARY_PROGRAMME VALUES(13,'P4','US');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO LIBARY_PROGRAMME VALUES(14,'P5','ENGLAND');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK VALUES(101,'ADE','SBC',2013);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO BOOK VALUES(101,'DBMS','PEARSON',2013);
+ERROR 1062 (23000): Duplicate entry '101' for key 'book.PRIMARY'
+mysql> INSERT INTO BOOK VALUES(102,'DBMS','PEARSON',2013);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK VALUES(103,'ME','KETO',2013);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK VALUES(104,'ECE','MILATO',2013);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK VALUES(105,'DS','KEDO',2016);
+Query OK, 1 row affected (0.01 sec)
+
+mysql>  INSERT INTO BOOK_AUTHOR(101,'A1');
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '101,'A1')' at line 1
+mysql>  INSERT INTO BOOK_AUTHOR VALUES(101,'A1');
+Query OK, 1 row affected (0.04 sec)
+
+mysql>  INSERT INTO BOOK_AUTHOR VALUES(102,'A2');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>  INSERT INTO BOOK_AUTHOR VALUES(103,'A3');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>  INSERT INTO BOOK_AUTHOR VALUES(104,'A4');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>  INSERT INTO BOOK_AUTHOR VALUES(105,'A5');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_COPIES VALUES(101,'P1',800);
+ERROR 1366 (HY000): Incorrect integer value: 'P1' for column 'PROGRAMME_ID' at row 1
+mysql> INSERT INTO BOOK_COPIES VALUES(101,10,800);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_COPIES VALUES(102,11,700);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_COPIES VALUES(101,12,200);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO BOOK_COPIES VALUES(103,13,300);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_COPIES VALUES(104,14,400);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM BOOK;
++---------+-------+----------------+----------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | PUB_YEAR |
++---------+-------+----------------+----------+
+|     101 | ADE   | SBC            |     2013 |
+|     102 | DBMS  | PEARSON        |     2013 |
+|     103 | ME    | KETO           |     2013 |
+|     104 | ECE   | MILATO         |     2013 |
+|     105 | DS    | KEDO           |     2016 |
++---------+-------+----------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(101,10,1002,20170122,20170128);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(102,11,1005,20170211,20170217);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(101,12,1002,20170311,20170317);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(103,13,1006,20170611,20170617);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(104,14,1002,20170411,20170417);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(105,10,1007,20170911,20170917);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(104,11,1001,20171111,20171117);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_LENDING VALUES(102,12,1002,20170111,20170117);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM BOOK_LENDING;
++---------+--------------+---------+------------+------------+
+| BOOK_ID | PROGRAMME_ID | CARD_NO | DATE_OUT   | DUE_DATE   |
++---------+--------------+---------+------------+------------+
+|     101 |           10 |    1002 | 2017-01-22 | 2017-01-28 |
+|     101 |           12 |    1002 | 2017-03-11 | 2017-03-17 |
+|     102 |           11 |    1005 | 2017-02-11 | 2017-02-17 |
+|     102 |           12 |    1002 | 2017-01-11 | 2017-01-17 |
+|     103 |           13 |    1006 | 2017-06-11 | 2017-06-17 |
+|     104 |           11 |    1001 | 2017-11-11 | 2017-11-17 |
+|     104 |           14 |    1002 | 2017-04-11 | 2017-04-17 |
+|     105 |           10 |    1007 | 2017-09-11 | 2017-09-17 |
++---------+--------------+---------+------------+------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT BOOK.BOOK_ID,TITLE,PUBLISHER_NAME,AUTHOR_NAME,SUM(NO_OF_COPIES) FROM BOOK,BOOK_AUTHOR,BOOK_COPIES WHERE BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID AND BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID GROUP BY BOOK.BOOK_ID;
++---------+-------+----------------+-------------+-------------------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | AUTHOR_NAME | SUM(NO_OF_COPIES) |
++---------+-------+----------------+-------------+-------------------+
+|     105 | DS    | KEDO           | A5          |              2400 |
+|     104 | ECE   | MILATO         | A4          |              2400 |
+|     103 | ME    | KETO           | A3          |              2400 |
+|     102 | DBMS  | PEARSON        | A2          |              2400 |
+|     101 | ADE   | SBC            | A1          |              2400 |
++---------+-------+----------------+-------------+-------------------+
+5 rows in set (0.01 sec)
+
+mysql> SELECT BOOK.BOOK_ID,TITLE,PUBLISHER_NAME,AUTHOR_NAME,SUM(NO_OF_COPIES) FROM BOOK,BOOK_AUTHOR,BOOK_COPIES WHERE BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID AND BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID GROUP BY BOOK_COPIES.BOOK_ID;
++---------+-------+----------------+-------------+-------------------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | AUTHOR_NAME | SUM(NO_OF_COPIES) |
++---------+-------+----------------+-------------+-------------------+
+|     105 | DS    | KEDO           | A5          |              5000 |
+|     105 | DS    | KEDO           | A5          |              3500 |
+|     105 | DS    | KEDO           | A5          |              1500 |
+|     105 | DS    | KEDO           | A5          |              2000 |
++---------+-------+----------------+-------------+-------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT BOOK.BOOK_ID,TITLE,PUBLISHER_NAME,AUTHOR_NAME,NO_OF_COPIES FROM BOOK,BOOK_AUTHOR,BOOK_COPIES WHERE BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID AND BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID;
++---------+-------+----------------+-------------+--------------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | AUTHOR_NAME | NO_OF_COPIES |
++---------+-------+----------------+-------------+--------------+
+|     105 | DS    | KEDO           | A5          |          800 |
+|     104 | ECE   | MILATO         | A4          |          800 |
+|     103 | ME    | KETO           | A3          |          800 |
+|     102 | DBMS  | PEARSON        | A2          |          800 |
+|     101 | ADE   | SBC            | A1          |          800 |
+|     105 | DS    | KEDO           | A5          |          200 |
+|     104 | ECE   | MILATO         | A4          |          200 |
+|     103 | ME    | KETO           | A3          |          200 |
+|     102 | DBMS  | PEARSON        | A2          |          200 |
+|     101 | ADE   | SBC            | A1          |          200 |
+|     105 | DS    | KEDO           | A5          |          700 |
+|     104 | ECE   | MILATO         | A4          |          700 |
+|     103 | ME    | KETO           | A3          |          700 |
+|     102 | DBMS  | PEARSON        | A2          |          700 |
+|     101 | ADE   | SBC            | A1          |          700 |
+|     105 | DS    | KEDO           | A5          |          300 |
+|     104 | ECE   | MILATO         | A4          |          300 |
+|     103 | ME    | KETO           | A3          |          300 |
+|     102 | DBMS  | PEARSON        | A2          |          300 |
+|     101 | ADE   | SBC            | A1          |          300 |
+|     105 | DS    | KEDO           | A5          |          400 |
+|     104 | ECE   | MILATO         | A4          |          400 |
+|     103 | ME    | KETO           | A3          |          400 |
+|     102 | DBMS  | PEARSON        | A2          |          400 |
+|     101 | ADE   | SBC            | A1          |          400 |
++---------+-------+----------------+-------------+--------------+
+25 rows in set (0.00 sec)
+
+mysql> SELECT BOOK.BOOK_ID,TITLE,PUBLISHER_NAME,AUTHOR_NAME,SUM(NO_OF_COPIES) FROM BOOK,BOOK_AUTHOR,BOOK_COPIES WHERE BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID AND BOOK.BOOK_ID=BOOK_COPIES.BOOK_ID GROUP BY BOOK_COPIES.BOOK_ID;
++---------+-------+----------------+-------------+-------------------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | AUTHOR_NAME | SUM(NO_OF_COPIES) |
++---------+-------+----------------+-------------+-------------------+
+|     101 | ADE   | SBC            | A1          |              1000 |
+|     102 | DBMS  | PEARSON        | A2          |               700 |
+|     103 | ME    | KETO           | A3          |               300 |
+|     104 | ECE   | MILATO         | A4          |               400 |
++---------+-------+----------------+-------------+-------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT BOOK.BOOK_ID,TITLE,PUBLISHER_NAME,AUTHOR_NAME,SUM(NO_OF_COPIES) FROM BOOK,BOOK_AUTHOR,BOOK_COPIES WHERE BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID AND BOOK.BOOK_ID=BOOK_COPIES.BOOK_ID GROUP BY BOOK.BOOK_ID;
++---------+-------+----------------+-------------+-------------------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | AUTHOR_NAME | SUM(NO_OF_COPIES) |
++---------+-------+----------------+-------------+-------------------+
+|     101 | ADE   | SBC            | A1          |              1000 |
+|     102 | DBMS  | PEARSON        | A2          |               700 |
+|     103 | ME    | KETO           | A3          |               300 |
+|     104 | ECE   | MILATO         | A4          |               400 |
++---------+-------+----------------+-------------+-------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT BOOK.BOOK_ID,TITLE,PUBLISHER_NAME,AUTHOR_NAME,NO_OF_COPIES FROM BOOK,BOOK_AUTHOR,BOOK_COPIES WHERE BOOK.BOOK_ID=BOOK_AUTHOR.BOOK_ID AND BOOK.BOOK_ID=BOOK_COPIES.BOOK_ID ;
++---------+-------+----------------+-------------+--------------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | AUTHOR_NAME | NO_OF_COPIES |
++---------+-------+----------------+-------------+--------------+
+|     101 | ADE   | SBC            | A1          |          800 |
+|     101 | ADE   | SBC            | A1          |          200 |
+|     102 | DBMS  | PEARSON        | A2          |          700 |
+|     103 | ME    | KETO           | A3          |          300 |
+|     104 | ECE   | MILATO         | A4          |          400 |
++---------+-------+----------------+-------------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT CARD_NO,COUNT(CARD_NO) FROM BOOK_LENDING WHERE DATE_OUT BETWEEN 20170101 AND 20170630 GROUP BY CARD_NO HAVING COUNT(CARD_NO)>=3;
++---------+----------------+
+| CARD_NO | COUNT(CARD_NO) |
++---------+----------------+
+|    1002 |              4 |
++---------+----------------+
+1 row in set (0.00 sec)
+
+mysql> CREATE TABLE BOOK_PARTION(BOOK_ID INT,TITLE VARCHAR(20),PUBLISHER_NAME VARCHAR(20),PUB_YEAR INT,PRIMARY KEY(BOOK_ID,PUB_YEAR));
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> INSERT INTO BOOK_PARTION VALUES(101,'ADE','SBC',2019);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> INSERT INTO BOOK_PARTION VALUES(102,'ADE','SBC',2020);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_PARTION VALUES(103,'ADE','SBC',2021);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_PARTION VALUES(104,'ADE','SBC',2021);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO BOOK_PARTION VALUES(105,'ADE','SBC',2024);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> ALTER TABLE BOOK_PARTION PARTITION BY RANGE(PUB_YEAR)(PARTITION P1 LESS THAN(2021),PARTITIO P2 LESS THAN(2023),PARTITION P3 LESS THAN(2025));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'LESS THAN(2021),PARTITIO P2 LESS THAN(2023),PARTITION P3 LESS THAN(2025))' at line 1
+mysql> ALTER TABLE BOOK_PARTION PARTITION BY RANGE(PUB_YEAR)(PARTITION P1 LESS THAN(2021),PARTITION P2 LESS THAN(2023),PARTITION P3 LESS THAN(2025));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'LESS THAN(2021),PARTITION P2 LESS THAN(2023),PARTITION P3 LESS THAN(2025))' at line 1
+mysql> SELECT * FROM BOOK_PARTION;
++---------+-------+----------------+----------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | PUB_YEAR |
++---------+-------+----------------+----------+
+|     101 | ADE   | SBC            |     2019 |
+|     102 | ADE   | SBC            |     2020 |
+|     103 | ADE   | SBC            |     2021 |
+|     104 | ADE   | SBC            |     2021 |
+|     105 | ADE   | SBC            |     2024 |
++---------+-------+----------------+----------+
+5 rows in set (0.00 sec)
+
+mysql> ALTER TABLE BOOK_PARTION PARTITION BY RANGE(PUB_YEAR) (PARTITION P1 VALUES LESS THAN(2021),PARTITION P2 VALUES LESS THAN(2023),PARTITION P3 VALUES LESS THAN(2025));
+Query OK, 5 rows affected (0.55 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM BOOK_PARTION PARTITION(P1);
++---------+-------+----------------+----------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | PUB_YEAR |
++---------+-------+----------------+----------+
+|     101 | ADE   | SBC            |     2019 |
+|     102 | ADE   | SBC            |     2020 |
++---------+-------+----------------+----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM BOOK_PARTION PARTITION(P2);
++---------+-------+----------------+----------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | PUB_YEAR |
++---------+-------+----------------+----------+
+|     103 | ADE   | SBC            |     2021 |
+|     104 | ADE   | SBC            |     2021 |
++---------+-------+----------------+----------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT * FROM BOOK_PARTION PARTITION(P3);
++---------+-------+----------------+----------+
+| BOOK_ID | TITLE | PUBLISHER_NAME | PUB_YEAR |
++---------+-------+----------------+----------+
+|     105 | ADE   | SBC            |     2024 |
++---------+-------+----------------+----------+
+1 row in set (0.00 sec)
+
+mysql>
